@@ -15,7 +15,9 @@ app.get("/", (req, res) => {
   res.send("Salim AI server is running ✅");
 });
 
-// Чат
+// =======================
+// 💬 ЧАТ (НЕ ТРОГАЕМ)
+// =======================
 app.post("/api/chat", async (req, res) => {
   try {
     const userMessage = req.body.message;
@@ -46,6 +48,46 @@ app.post("/api/chat", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.json({ reply: "Ошибка сервера ❌" });
+  }
+});
+
+// =======================
+// 🖼️ ГЕНЕРАЦИЯ КАРТИНОК
+// =======================
+app.post("/api/image", async (req, res) => {
+  try {
+    const { prompt } = req.body;
+
+    if (!prompt) {
+      return res.status(400).json({ error: "Нет описания картинки" });
+    }
+
+    const response = await fetch("https://api.openai.com/v1/images/generations", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "gpt-image-1",
+        prompt: prompt,
+        size: "1024x1024"
+      })
+    });
+
+    const data = await response.json();
+
+    if (!data.data || !data.data[0]?.url) {
+      return res.status(500).json({ error: "Ошибка генерации изображения" });
+    }
+
+    res.json({
+      image: data.data[0].url
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Ошибка сервера при генерации изображения" });
   }
 });
 
