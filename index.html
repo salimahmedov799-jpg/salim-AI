@@ -6,10 +6,16 @@
 <title>Salim AI</title>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0b0b0b;
+  font-family: 'Inter', sans-serif;
+  background: radial-gradient(circle at top, #020617, #000);
   color: #fff;
   display: flex;
   justify-content: center;
@@ -17,73 +23,106 @@ body {
   height: 100vh;
 }
 
+/* КАРТОЧКА ЧАТА */
 .chat {
   width: 100%;
   max-width: 420px;
   height: 90vh;
-  background: #000;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(14px);
   display: flex;
   flex-direction: column;
-  border-radius: 16px;
+  border-radius: 18px;
   overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 0 40px rgba(59,130,246,0.25);
 }
 
+/* ШАПКА */
 .header {
-  padding: 15px;
+  padding: 16px;
   text-align: center;
-  background: #0f0f0f;
-  font-weight: bold;
-  font-size: 18px;
+  font-weight: 700;
+  font-size: 20px;
+  background: rgba(0,0,0,0.5);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  letter-spacing: 0.5px;
 }
 
+/* СООБЩЕНИЯ */
 .messages {
   flex: 1;
-  padding: 15px;
+  padding: 16px;
   overflow-y: auto;
 }
 
 .msg {
-  margin-bottom: 12px;
-  padding: 10px 14px;
-  border-radius: 12px;
+  margin-bottom: 14px;
+  padding: 12px 15px;
+  border-radius: 14px;
   max-width: 80%;
-  line-height: 1.4;
+  line-height: 1.5;
+  animation: fadeUp 0.25s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .user {
-  background: #1f1f1f;
   margin-left: auto;
+  color: #fff;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  box-shadow: 0 0 18px rgba(59,130,246,0.6);
 }
 
 .bot {
-  background: #121212;
-  border: 1px solid #222;
+  color: #e5e7eb;
+  background: rgba(15,23,42,0.9);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: inset 0 0 10px rgba(99,102,241,0.25);
 }
 
+/* НИЖНЯЯ ПАНЕЛЬ */
 .input {
   display: flex;
-  padding: 10px;
-  background: #0f0f0f;
+  padding: 12px;
+  background: rgba(0,0,0,0.55);
+  border-top: 1px solid rgba(255,255,255,0.08);
 }
 
 input {
   flex: 1;
-  padding: 12px;
-  border-radius: 10px;
+  padding: 14px;
+  border-radius: 14px;
   border: none;
   outline: none;
-  background: #1a1a1a;
+  background: rgba(255,255,255,0.1);
   color: #fff;
+  font-size: 16px;
+}
+
+input::placeholder {
+  color: #9ca3af;
 }
 
 button {
-  margin-left: 8px;
-  padding: 0 16px;
-  border-radius: 10px;
+  margin-left: 10px;
+  padding: 0 20px;
+  border-radius: 14px;
   border: none;
-  background: #22c55e;
+  cursor: pointer;
+  font-size: 20px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
   color: #000;
-  font-size: 18px;
+  box-shadow: 0 0 18px rgba(34,197,94,0.6);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+button:active {
+  transform: scale(0.95);
+  box-shadow: 0 0 10px rgba(34,197,94,0.4);
 }
 </style>
 </head>
@@ -91,7 +130,7 @@ button {
 <body>
 
 <div class="chat">
-  <div class="header">Salim AI</div>
+  <div class="header">🚀 Salim AI</div>
   <div class="messages" id="messages"></div>
 
   <div class="input">
@@ -119,7 +158,7 @@ async function send() {
   add(text, "user");
   input.value = "";
 
-  add("AI думает...", "bot");
+  add("Salim AI думает...", "bot");
 
   try {
     const res = await fetch("https://salim-ai.onrender.com/api/chat", {
