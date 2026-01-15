@@ -1,160 +1,159 @@
-<!DOCTYPE html>  
-<html lang="ru">  
-<head>  
-<meta charset="UTF-8">  
-<meta name="viewport" content="width=device-width, initial-scale=1.0">  
-<title>Salim AI :: MATRIX</title>  
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salim AI :: MATRIX</title>
 
-<style>  
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');  
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
+*{box-sizing:border-box}
 
-*{box-sizing:border-box}  
+body{
+  margin:0;
+  font-family:'JetBrains Mono', monospace;
+  background:#000;
+  color:#e5e7eb;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  overflow:hidden;
+}
 
-body{  
-  margin:0;  
-  font-family:'JetBrains Mono', monospace;  
-  background:#000;  
-  color:#e5e7eb;  
-  display:flex;  
-  justify-content:center;  
-  align-items:center;  
-  height:100vh;  
-  overflow:hidden;  
-}  
+#matrix{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  opacity:.25;
+}
 
-#matrix{  
-  position:fixed;  
-  inset:0;  
-  z-index:0;  
-  opacity:.25;  
-}  
+.chat{
+  position:relative;
+  z-index:2;
+  width:100%;
+  max-width:440px;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  background:rgba(0,0,0,.85);
+  border-left:1px solid rgba(0,255,156,.2);
+  border-right:1px solid rgba(0,255,156,.2);
+  backdrop-filter:blur(6px);
+}
 
-.chat{  
-  position:relative;  
-  z-index:2;  
-  width:100%;  
-  max-width:440px;  
-  height:100vh;  
-  display:flex;  
-  flex-direction:column;  
-  background:rgba(0,0,0,.85);  
-  border-left:1px solid rgba(0,255,156,.2);  
-  border-right:1px solid rgba(0,255,156,.2);  
-  backdrop-filter:blur(6px);  
-}  
+.header{
+  padding:14px 16px;
+  border-bottom:1px solid rgba(0,255,156,.25);
+}
+.header-title{
+  font-weight:700;
+  font-size:14px;
+  color:#00ff9c;
+}
+.status{
+  font-size:11px;
+  color:#00ff9c;
+  opacity:.7;
+}
 
-.header{  
-  padding:14px 16px;  
-  border-bottom:1px solid rgba(0,255,156,.25);  
-}  
-.header-title{  
-  font-weight:700;  
-  font-size:14px;  
-  color:#00ff9c;  
-}  
-.status{  
-  font-size:11px;  
-  color:#00ff9c;  
-  opacity:.7;  
-}  
+.messages{
+  flex:1;
+  padding:18px 14px 90px;
+  overflow-y:auto;
+}
+.msg{
+  margin-bottom:22px;
+  font-size:14px;
+  line-height:1.65;
+}
+.user{color:#e5e7eb;}
+.bot{
+  padding-left:12px;
+  border-left:3px solid #00ff9c;
+  color:#b6ffe3;
+  position:relative;
+}
+.bot::before{
+  content:"▍";
+  position:absolute;
+  left:-12px;
+  color:#00ff9c;
+  animation:blink 1s infinite;
+}
+@keyframes blink{
+  0%,50%,100%{opacity:1}
+  25%,75%{opacity:0}
+}
 
-.messages{  
-  flex:1;  
-  padding:18px 14px 90px;  
-  overflow-y:auto;  
-}  
-.msg{  
-  margin-bottom:22px;  
-  font-size:14px;  
-  line-height:1.65;  
-}  
-.user{color:#e5e7eb;}  
-.bot{  
-  padding-left:12px;  
-  border-left:3px solid #00ff9c;  
-  color:#b6ffe3;  
-  position:relative;  
-}  
-.bot::before{  
-  content:"▍";  
-  position:absolute;  
-  left:-12px;  
-  color:#00ff9c;  
-  animation:blink 1s infinite;  
-}  
-@keyframes blink{  
-  0%,50%,100%{opacity:1}  
-  25%,75%{opacity:0}  
-}  
+.input{
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:440px;
+  padding:12px;
+  background:rgba(0,0,0,.95);
+  border-top:1px solid rgba(0,255,156,.25);
+}
+.input-box{
+  display:flex;
+  background:#020617;
+  border-radius:18px;
+  padding:6px;
+  border:1px solid rgba(0,255,156,.25);
+}
+input{
+  flex:1;
+  border:none;
+  background:none;
+  color:#00ff9c;
+  padding:10px;
+  font-size:13.5px;
+  outline:none;
+}
+button{
+  border:none;
+  background:#00ff9c;
+  color:#000;
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  cursor:pointer;
+}
+#voiceBtn{
+  background:#020617;
+  color:#00ff9c;
+  margin-right:6px;
+  border:1px solid rgba(0,255,156,.25);
+}
+</style>
+</head>
 
-.input{  
-  position:fixed;  
-  bottom:0;  
-  left:50%;  
-  transform:translateX(-50%);  
-  width:100%;  
-  max-width:440px;  
-  padding:12px;  
-  background:rgba(0,0,0,.95);  
-  border-top:1px solid rgba(0,255,156,.25);  
-}  
-.input-box{  
-  display:flex;  
-  background:#020617;  
-  border-radius:18px;  
-  padding:6px;  
-  border:1px solid rgba(0,255,156,.25);  
-}  
-input{  
-  flex:1;  
-  border:none;  
-  background:none;  
-  color:#00ff9c;  
-  padding:10px;  
-  font-size:13.5px;  
-  outline:none;  
-}  
-button{  
-  border:none;  
-  background:#00ff9c;  
-  color:#000;  
-  width:32px;  
-  height:32px;  
-  border-radius:50%;  
-  cursor:pointer;  
-}  
-#voiceBtn{  
-  background:#020617;  
-  color:#00ff9c;  
-  margin-right:6px;  
-  border:1px solid rgba(0,255,156,.25);  
-}  
-</style>  
-</head>  
+<body>
 
-<body>  
+<canvas id="matrix"></canvas>
 
-<canvas id="matrix"></canvas>  
+<div class="chat">
+  <div class="header">
+    <div class="header-title">> Salim AI :: MATRIX NODE</div>
+    <div class="status">STATUS: CONNECTED</div>
+  </div>
 
-<div class="chat">  
-  <div class="header">  
-    <div class="header-title">> Salim AI :: MATRIX NODE</div>  
-    <div class="status">STATUS: CONNECTED</div>  
-  </div>  
+  <div class="messages" id="messages"></div>
 
-  <div class="messages" id="messages"></div>  
-
-  <div class="input">  
-    <div class="input-box">  
-      <button id="voiceBtn">🎤</button>  
-      <input id="text" placeholder="Введите команду..." />  
-      <button id="sendBtn">➤</button>  
-    </div>  
-  </div>  
-</div>  
+  <div class="input">
+    <div class="input-box">
+      <button id="voiceBtn">🎤</button>
+      <input id="text" placeholder="Введите команду..." />
+      <button id="sendBtn">➤</button>
+    </div>
+  </div>
+</div>
 
 <script>
-/* MATRIX EFFECT — без изменений */
+/* MATRIX EFFECT */
 const canvas=document.getElementById("matrix");
 const ctx=canvas.getContext("2d");
 function resize(){
@@ -179,22 +178,21 @@ setInterval(()=>{
   });
 },50);
 
-/* 🔊 ОЗВУЧКА — ДОБАВЛЕНО */
+/* 🔊 ОЗВУЧКА */
 function speak(text){
   if(!window.speechSynthesis) return;
   speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(text);
   u.lang="ru-RU";
   u.rate=1;
-  u.pitch=1;
   speechSynthesis.speak(u);
 }
 
-/* 📳 ANDROID VIBRATE — ДОБАВЛЕНО */
-function safeVibrate(){
+/* 📳 ANDROID VIBRATE */
+function safeVibrate(ms=60){
   try{
     if(window.Android && Android.vibrate){
-      Android.vibrate();
+      Android.vibrate(ms);
     }
   }catch(e){}
 }
@@ -202,7 +200,6 @@ function safeVibrate(){
 /* CHAT */
 const messages=document.getElementById("messages");
 const input=document.getElementById("text");
-let memory=JSON.parse(localStorage.getItem("salim_chat"))||[];
 
 function add(text,role){
   const d=document.createElement("div");
@@ -229,31 +226,28 @@ async function send(){
     const data=await res.json();
     const reply=data.reply||"NO RESPONSE";
     messages.lastChild.textContent=reply;
-
-    speak(reply);       // 🔊
-    safeVibrate();      // 📳
-
+    speak(reply);
+    safeVibrate(80);
   }catch{
     messages.lastChild.textContent="CONNECTION ERROR";
   }
 }
 
-document.getElementById("sendBtn").onclick=send;
+sendBtn.onclick=send;
 input.addEventListener("keydown",e=>{if(e.key==="Enter")send()});
 
-/* 🎤 РАСПОЗНАВАНИЕ — УЛУЧШЕНО */
+/* 🎤 РАСПОЗНАВАНИЕ */
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 if(SR){
   const r=new SR();
   r.lang="ru-RU";
-  r.continuous=false;
   r.onresult=e=>{
     input.value=e.results[0][0].transcript;
     send();
   };
-  document.getElementById("voiceBtn").onclick=()=>r.start();
+  voiceBtn.onclick=()=>r.start();
 }
-</script>  
+</script>
 
-</body>  
+</body>
 </html>
