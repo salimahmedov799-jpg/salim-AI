@@ -3,45 +3,63 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Salim AI</title>
+<title>Salim AI :: MATRIX</title>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
 
 *{box-sizing:border-box}
+
+/* BACKGROUND */
 body{
   margin:0;
-  font-family:'Inter',sans-serif;
+  font-family:'JetBrains Mono', monospace;
   background:#000;
   color:#e5e7eb;
   display:flex;
   justify-content:center;
   align-items:center;
   height:100vh;
+  overflow:hidden;
+}
+
+/* MATRIX CANVAS */
+#matrix{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  opacity:.25;
 }
 
 /* APP */
 .chat{
+  position:relative;
+  z-index:2;
   width:100%;
   max-width:440px;
   height:100vh;
   display:flex;
   flex-direction:column;
-  background:#000;
+  background:rgba(0,0,0,.85);
+  border-left:1px solid rgba(0,255,156,.2);
+  border-right:1px solid rgba(0,255,156,.2);
+  backdrop-filter:blur(6px);
 }
 
 /* HEADER */
 .header{
   padding:14px 16px;
-  border-bottom:1px solid rgba(255,255,255,.06);
+  border-bottom:1px solid rgba(0,255,156,.25);
 }
 .header-title{
-  font-weight:600;
-  font-size:15px;
+  font-weight:700;
+  font-size:14px;
+  color:#00ff9c;
 }
 .status{
-  font-size:12px;
-  color:#22c55e;
+  font-size:11px;
+  color:#00ff9c;
+  opacity:.7;
 }
 
 /* MESSAGES */
@@ -52,21 +70,34 @@ body{
 }
 .msg{
   margin-bottom:22px;
-  font-size:14.5px;
-  line-height:1.6;
+  font-size:14px;
+  line-height:1.65;
 }
 .user{
   color:#e5e7eb;
 }
 .bot{
   padding-left:12px;
-  border-left:3px solid #22c55e;
-  color:#d1fae5;
+  border-left:3px solid #00ff9c;
+  color:#b6ffe3;
+  position:relative;
+}
+.bot::before{
+  content:"▍";
+  position:absolute;
+  left:-12px;
+  color:#00ff9c;
+  animation:blink 1s infinite;
+}
+@keyframes blink{
+  0%,50%,100%{opacity:1}
+  25%,75%{opacity:0}
 }
 .bot img{
   margin-top:10px;
   max-width:100%;
-  border-radius:14px;
+  border-radius:12px;
+  box-shadow:0 0 30px rgba(0,255,156,.35);
 }
 
 /* INPUT */
@@ -78,47 +109,52 @@ body{
   width:100%;
   max-width:440px;
   padding:12px;
-  background:rgba(0,0,0,.9);
-  border-top:1px solid rgba(255,255,255,.06);
+  background:rgba(0,0,0,.95);
+  border-top:1px solid rgba(0,255,156,.25);
 }
 .input-box{
   display:flex;
   background:#020617;
-  border-radius:20px;
-  padding:8px;
+  border-radius:18px;
+  padding:6px;
+  border:1px solid rgba(0,255,156,.25);
 }
 input{
   flex:1;
   border:none;
   background:none;
-  color:#fff;
+  color:#00ff9c;
   padding:10px;
-  font-size:14px;
+  font-size:13.5px;
   outline:none;
 }
+input::placeholder{color:rgba(0,255,156,.5)}
 button{
   border:none;
-  background:#22c55e;
+  background:#00ff9c;
   color:#000;
-  width:38px;
-  height:38px;
+  width:36px;
+  height:36px;
   border-radius:50%;
   cursor:pointer;
 }
 #voiceBtn{
   background:#020617;
-  color:#22c55e;
+  color:#00ff9c;
   margin-right:6px;
+  border:1px solid rgba(0,255,156,.25);
 }
 </style>
 </head>
 
 <body>
 
+<canvas id="matrix"></canvas>
+
 <div class="chat">
   <div class="header">
-    <div class="header-title">Salim AI</div>
-    <div class="status">● online</div>
+    <div class="header-title">> Salim AI :: MATRIX NODE</div>
+    <div class="status">STATUS: CONNECTED</div>
   </div>
 
   <div class="messages" id="messages"></div>
@@ -126,22 +162,55 @@ button{
   <div class="input">
     <div class="input-box">
       <button id="voiceBtn">🎤</button>
-      <input id="text" placeholder="Напишите сообщение..." />
+      <input id="text" placeholder="Введите команду..." />
       <button id="sendBtn">➤</button>
     </div>
   </div>
 </div>
 
 <script>
+/* MATRIX EFFECT */
+const canvas=document.getElementById("matrix");
+const ctx=canvas.getContext("2d");
+function resize(){
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+}
+resize();
+window.onresize=resize;
+
+const letters="01アカサタナハマヤラワABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const fontSize=14;
+let columns=[];
+function init(){
+  columns=[];
+  for(let i=0;i<canvas.width/fontSize;i++){
+    columns[i]=Math.random()*canvas.height;
+  }
+}
+init();
+
+function drawMatrix(){
+  ctx.fillStyle="rgba(0,0,0,0.05)";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle="#00ff9c";
+  ctx.font=fontSize+"px JetBrains Mono";
+  columns.forEach((y,i)=>{
+    const text=letters[Math.floor(Math.random()*letters.length)];
+    ctx.fillText(text,i*fontSize,y);
+    columns[i]=y>canvas.height?0:y+fontSize;
+  });
+}
+setInterval(drawMatrix,50);
+
+/* CHAT */
 const messages=document.getElementById("messages");
 const input=document.getElementById("text");
 
 let memory=JSON.parse(localStorage.getItem("salim_chat"))||[];
-let smartMemory=JSON.parse(localStorage.getItem("salim_smart"))||[];
 
 function saveAll(){
   localStorage.setItem("salim_chat",JSON.stringify(memory));
-  localStorage.setItem("salim_smart",JSON.stringify(smartMemory));
 }
 
 function add(text,role,save=true){
@@ -164,8 +233,7 @@ async function send(){
 
   add(text,"user");
   input.value="";
-
-  add("Salim AI думает...","bot");
+  add("Processing request...","bot");
 
   const isImage=/картин|нарисуй|image|draw|фото/i.test(text);
 
@@ -187,14 +255,15 @@ async function send(){
 
     if(isImage && data.image){
       messages.lastChild.innerHTML=
-        `<img src="${data.image}"><div style="opacity:.5;font-size:12px">🎨 Salim AI</div>`;
+        `<img src="${data.image}">
+         <div style="opacity:.5;font-size:11px">[GENERATED]</div>`;
     }else{
-      messages.lastChild.textContent=data.reply||"Нет ответа";
+      messages.lastChild.textContent=data.reply||"NO RESPONSE";
       memory[memory.length-1].text=data.reply;
     }
     saveAll();
   }catch{
-    messages.lastChild.textContent="Ошибка соединения";
+    messages.lastChild.textContent="CONNECTION ERROR";
   }
 }
 
