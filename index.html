@@ -7,135 +7,103 @@
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-
-* {
-  box-sizing: border-box;
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:'Inter',sans-serif;
+  background:radial-gradient(circle at top,#020617,#000);
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
 }
-
-body {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  background: radial-gradient(circle at top, #020617, #000);
-  color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+.chat{
+  width:100%;
+  max-width:420px;
+  height:90vh;
+  background:rgba(0,0,0,.55);
+  backdrop-filter:blur(14px);
+  display:flex;
+  flex-direction:column;
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.08);
 }
-
-/* КАРТОЧКА ЧАТА */
-.chat {
-  width: 100%;
-  max-width: 420px;
-  height: 90vh;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(14px);
-  display: flex;
-  flex-direction: column;
-  border-radius: 18px;
-  overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 0 40px rgba(59,130,246,0.25);
+.header{
+  padding:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:rgba(0,0,0,.5);
 }
-
-/* ШАПКА */
-.header {
-  padding: 16px;
-  text-align: center;
-  font-weight: 700;
-  font-size: 20px;
-  background: rgba(0,0,0,0.5);
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  letter-spacing: 0.5px;
+.header-title{font-weight:700}
+.clear-btn{
+  background:none;
+  border:none;
+  color:#f87171;
+  font-size:18px;
+  cursor:pointer;
 }
-
-/* СООБЩЕНИЯ */
-.messages {
-  flex: 1;
-  padding: 16px;
-  overflow-y: auto;
+.messages{
+  flex:1;
+  padding:16px;
+  overflow-y:auto;
 }
-
-.msg {
-  margin-bottom: 14px;
-  padding: 12px 15px;
-  border-radius: 14px;
-  max-width: 80%;
-  line-height: 1.5;
-  animation: fadeUp 0.25s ease;
+.msg{
+  margin-bottom:14px;
+  padding:12px 15px;
+  border-radius:14px;
+  max-width:80%;
 }
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+.user{
+  margin-left:auto;
+  background:linear-gradient(135deg,#2563eb,#3b82f6);
 }
-
-.user {
-  margin-left: auto;
-  color: #fff;
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
-  box-shadow: 0 0 18px rgba(59,130,246,0.6);
+.bot{
+  background:rgba(15,23,42,.9);
+  border:1px solid rgba(255,255,255,.08);
 }
-
-.bot {
-  color: #e5e7eb;
-  background: rgba(15,23,42,0.9);
-  border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: inset 0 0 10px rgba(99,102,241,0.25);
+.input{
+  display:flex;
+  padding:12px;
+  background:rgba(0,0,0,.55);
 }
-
-/* НИЖНЯЯ ПАНЕЛЬ */
-.input {
-  display: flex;
-  padding: 12px;
-  background: rgba(0,0,0,0.55);
-  border-top: 1px solid rgba(255,255,255,0.08);
+input{
+  flex:1;
+  padding:14px;
+  border-radius:14px;
+  border:none;
+  background:rgba(255,255,255,.1);
+  color:#fff;
 }
-
-input {
-  flex: 1;
-  padding: 14px;
-  border-radius: 14px;
-  border: none;
-  outline: none;
-  background: rgba(255,255,255,0.1);
-  color: #fff;
-  font-size: 16px;
+button{
+  margin-left:8px;
+  padding:0 14px;
+  border-radius:14px;
+  border:none;
+  cursor:pointer;
+  font-size:18px;
 }
-
-input::placeholder {
-  color: #9ca3af;
-}
-
-button {
-  margin-left: 10px;
-  padding: 0 20px;
-  border-radius: 14px;
-  border: none;
-  cursor: pointer;
-  font-size: 20px;
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  color: #000;
-  box-shadow: 0 0 18px rgba(34,197,94,0.6);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-button:active {
-  transform: scale(0.95);
-  box-shadow: 0 0 10px rgba(34,197,94,0.4);
-}
+#voiceBtn{background:#111;color:#fff}
+#sendBtn{background:linear-gradient(135deg,#22c55e,#16a34a);color:#000}
 </style>
 </head>
 
 <body>
 
 <div class="chat">
-  <div class="header">🚀 Salim AI</div>
+  <div class="header">
+    <div class="header-title">🚀 Salim AI</div>
+    <button class="clear-btn" onclick="clearAll()">🧹</button>
+  </div>
+
   <div class="messages" id="messages"></div>
 
   <div class="input">
     <input id="text" placeholder="Напиши сообщение..." />
-    <button onclick="send()">➤</button>
+    <button id="voiceBtn">🎤</button>
+    <button id="sendBtn">➤</button>
   </div>
 </div>
 
@@ -143,36 +111,99 @@ button:active {
 const messages = document.getElementById("messages");
 const input = document.getElementById("text");
 
-function add(text, cls) {
-  const div = document.createElement("div");
-  div.className = "msg " + cls;
-  div.textContent = text;
-  messages.appendChild(div);
-  messages.scrollTop = messages.scrollHeight;
+/* 🧠 ОБЫЧНАЯ ПАМЯТЬ */
+let memory = JSON.parse(localStorage.getItem("salim_chat")) || [];
+
+/* 🧠 УМНАЯ ПАМЯТЬ */
+let smartMemory = JSON.parse(localStorage.getItem("salim_smart")) || [];
+
+function saveAll(){
+  localStorage.setItem("salim_chat",JSON.stringify(memory));
+  localStorage.setItem("salim_smart",JSON.stringify(smartMemory));
 }
 
-async function send() {
-  const text = input.value.trim();
-  if (!text) return;
-
-  add(text, "user");
-  input.value = "";
-
-  add("Salim AI думает...", "bot");
-
-  try {
-    const res = await fetch("https://salim-ai.onrender.com/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: text })
-    });
-
-    const data = await res.json();
-    messages.lastChild.textContent = data.reply || "Нет ответа 😕";
-
-  } catch (e) {
-    messages.lastChild.textContent = "Ошибка соединения ❌";
+function add(text,role,save=true){
+  const d=document.createElement("div");
+  d.className="msg "+role;
+  d.textContent=text;
+  messages.appendChild(d);
+  messages.scrollTop=messages.scrollHeight;
+  if(save){
+    memory.push({role,text});
+    saveAll();
   }
+}
+
+/* ВОССТАНОВЛЕНИЕ */
+memory.forEach(m=>add(m.text,m.role,false));
+
+/* 🧠 АНАЛИЗ ВАЖНОЙ ИНФОРМАЦИИ */
+function detectSmartMemory(text){
+  const patterns=[
+    /меня зовут (.+)/i,
+    /мое имя (.+)/i,
+    /я люблю (.+)/i,
+    /запомни,? что (.+)/i,
+    /я живу в (.+)/i
+  ];
+  patterns.forEach(p=>{
+    const m=text.match(p);
+    if(m){
+      smartMemory.push(m[0]);
+      saveAll();
+    }
+  });
+}
+
+async function send(){
+  const text=input.value.trim();
+  if(!text)return;
+
+  add(text,"user");
+  detectSmartMemory(text);
+  input.value="";
+
+  add("Salim AI думает...","bot");
+
+  const context = smartMemory.length
+    ? "Информация о пользователе: "+smartMemory.join("; ")
+    : "";
+
+  try{
+    const res=await fetch("https://salim-ai.onrender.com/api/chat",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        message: context + "\n" + text
+      })
+    });
+    const data=await res.json();
+    messages.lastChild.textContent=data.reply||"Нет ответа 😕";
+    memory[memory.length-1].text=data.reply;
+    saveAll();
+  }catch{
+    messages.lastChild.textContent="Ошибка соединения ❌";
+  }
+}
+
+document.getElementById("sendBtn").onclick=send;
+
+/* 🧹 ПОЛНАЯ ОЧИСТКА */
+function clearAll(){
+  if(!confirm("Очистить всю память?"))return;
+  localStorage.clear();
+  memory=[];
+  smartMemory=[];
+  messages.innerHTML="";
+}
+
+/* 🎤 ГОЛОС */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(SR){
+  const r=new SR();
+  r.lang="ru-RU";
+  document.getElementById("voiceBtn").onclick=()=>r.start();
+  r.onresult=e=>input.value=e.results[0][0].transcript;
 }
 </script>
 
