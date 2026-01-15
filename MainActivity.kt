@@ -15,3 +15,12 @@ class MainActivity : AppCompatActivity() {
     web.loadUrl("https://salimahmedov799-jpg.github.io/salim-AI/")
   }
 }
+class Bridge(val ctx: Context) {
+
+  @JavascriptInterface
+  fun vibrate(){
+    val v = ctx.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    v.vibrate(300)
+  }
+}
+web.addJavascriptInterface(Bridge(this), "Android")
