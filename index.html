@@ -1,161 +1,175 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>alkhas I Muslim popi babuina</title>
+<meta charset="UTF-8">
+<title>alkhas AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    /* ЭКРАН ЗАГРУЗКИ */
-    #loader {
-      position: fixed;
-      inset: 0;
-      background: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
+<style>
+body {
+  margin: 0;
+  background: #0b0f14;
+  color: #e5e7eb;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
 
-    .spinner {
-      width: 80px;
-      height: 80px;
-      border: 6px solid #00ff99;
-      border-top: 6px solid transparent;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
+header {
+  padding: 15px;
+  text-align: center;
+  background: #020617;
+  font-size: 20px;
+  font-weight: bold;
+  box-shadow: 0 0 15px #00ff99;
+}
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+#chat {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+}
 
-    /* ОСНОВНОЙ САЙТ */
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(135deg, #000000, #0f2027);
-      font-family: Arial, sans-serif;
-      color: #00ff99;
-      opacity: 0;
-      transition: opacity 1s ease;
-      text-align: center;
-    }
+.msg {
+  max-width: 80%;
+  padding: 12px 15px;
+  margin-bottom: 10px;
+  border-radius: 15px;
+  line-height: 1.4;
+}
 
-    body.loaded {
-      opacity: 1;
-    }
+.user {
+  background: #00ff99;
+  color: #000;
+  margin-left: auto;
+}
 
-    h1 {
-      margin-bottom: 20px;
-      font-size: 32px;
-      animation: glow 2s infinite alternate;
-    }
+.ai {
+  background: #020617;
+  border: 1px solid #00ff99;
+}
 
-    /* КАРТИНКА */
-    .zoom-img {
-      max-width: 90%;
-      border-radius: 20px;
-      box-shadow: 0 0 25px #00ff99;
-      cursor: pointer;
-      transition: transform 0.4s ease;
-    }
+img.generated {
+  max-width: 100%;
+  border-radius: 12px;
+  margin-top: 10px;
+  box-shadow: 0 0 15px #00ff99;
+}
 
-    .zoom-img.active {
-      transform: scale(1.8);
-      z-index: 10;
-    }
+footer {
+  display: flex;
+  padding: 10px;
+  background: #020617;
+  gap: 5px;
+}
 
-    /* КНОПКА */
-    button {
-      margin-top: 25px;
-      padding: 12px 25px;
-      font-size: 16px;
-      border: none;
-      border-radius: 30px;
-      background: #00ff99;
-      color: #000;
-      cursor: pointer;
-      box-shadow: 0 0 15px #00ff99;
-      transition: transform 0.3s;
-    }
+input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+}
 
-    button:hover {
-      transform: scale(1.1);
-    }
-
-    /* ВСПЛЫВАЮЩАЯ НАДПИСЬ */
-    #message {
-      position: fixed;
-      bottom: 30px;
-      background: #00ff99;
-      color: #000;
-      padding: 15px 25px;
-      border-radius: 30px;
-      box-shadow: 0 0 20px #00ff99;
-      font-size: 18px;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.5s ease;
-      z-index: 10000;
-    }
-
-    #message.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    @keyframes glow {
-      from { text-shadow: 0 0 5px #00ff99; }
-      to   { text-shadow: 0 0 20px #00ff99; }
-    }
-  </style>
+button {
+  padding: 12px 16px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  background: #00ff99;
+  color: #000;
+  font-weight: bold;
+}
+</style>
 </head>
 
 <body>
 
-  <!-- ЭКРАН ЗАГРУЗКИ -->
-  <div id="loader">
-    <div class="spinner"></div>
-  </div>
+<header>alkhas AI — free neural network</header>
 
-  <!-- ТЕКСТ СВЕРХУ -->
-  <h1>alkhas I Muslim popi babuina</h1>
+<div id="chat"></div>
 
-  <!-- КАРТИНКА -->
-  <img src="photo.png" class="zoom-img" onclick="zoom(this)" alt="photo">
+<footer>
+  <input id="prompt" placeholder="Напиши запрос..." />
+  <button onclick="sendText()">Текст</button>
+  <button onclick="sendImage()">Картинка</button>
+</footer>
 
-  <!-- КНОПКА -->
-  <button onclick="showMessage()">Нажми меня</button>
+<script>
+const chat = document.getElementById("chat");
+const input = document.getElementById("prompt");
 
-  <!-- НАДПИСЬ -->
-  <div id="message">алхас и Муслим попы бабуина</div>
+// ⬇ МОЖНО ОСТАВИТЬ ПУСТЫМ (работает бесплатно, если HF доступен)
+const HF_TOKEN = ""; 
 
-  <script>
-    // УВЕЛИЧЕНИЕ КАРТИНКИ
-    function zoom(img) {
-      img.classList.toggle("active");
+function addMessage(text, cls) {
+  const div = document.createElement("div");
+  div.className = "msg " + cls;
+  div.textContent = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+async function sendText() {
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = "";
+
+  addMessage(text, "user");
+  addMessage("Думаю...", "ai");
+
+  const res = await fetch(
+    "https://api-inference.huggingface.co/models/gpt2",
+    {
+      method: "POST",
+      headers: {
+        "Authorization": HF_TOKEN ? "Bearer " + HF_TOKEN : undefined,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ inputs: text })
     }
+  );
 
-    // ПОКАЗ НАДПИСИ
-    function showMessage() {
-      const msg = document.getElementById("message");
-      msg.classList.add("show");
+  const data = await res.json();
+  chat.lastChild.remove();
 
-      setTimeout(() => {
-        msg.classList.remove("show");
-      }, 3000);
+  addMessage(
+    data[0]?.generated_text || "Ошибка генерации",
+    "ai"
+  );
+}
+
+async function sendImage() {
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = "";
+
+  addMessage(text, "user");
+  addMessage("Генерирую изображение...", "ai");
+
+  const res = await fetch(
+    "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2",
+    {
+      method: "POST",
+      headers: {
+        "Authorization": HF_TOKEN ? "Bearer " + HF_TOKEN : undefined,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ inputs: text })
     }
+  );
 
-    // АНИМАЦИЯ ПРИ ЗАГРУЗКЕ
-    window.onload = function () {
-      document.getElementById("loader").style.display = "none";
-      document.body.classList.add("loaded");
-    };
-  </script>
+  const blob = await res.blob();
+  chat.lastChild.remove();
+
+  const img = document.createElement("img");
+  img.src = URL.createObjectURL(blob);
+  img.className = "generated";
+  chat.appendChild(img);
+  chat.scrollTop = chat.scrollHeight;
+}
+</script>
 
 </body>
 </html>
