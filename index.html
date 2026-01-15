@@ -2,246 +2,111 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>alkhas AI</title>
+<title>alkhas I alkhas AI</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-/* ===== ЧЕРНЫЙ ФОН + ЛОГО ===== */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(circle at center, rgba(255,255,255,0.04), transparent 60%),
-    #000;
-  z-index: -2;
-}
+* { box-sizing: border-box; font-family: Arial, sans-serif; }
 
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background-image: url("https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 220px;
-  opacity: 0.08;
-  animation: breathe 8s ease-in-out infinite;
-  z-index: -1;
-}
-
-@keyframes breathe {
-  0%   { transform: scale(1); opacity: 0.06; }
-  50%  { transform: scale(1.05); opacity: 0.1; }
-  100% { transform: scale(1); opacity: 0.06; }
-}
-
-/* ===== ОСНОВА ===== */
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  color: #e5e7eb;
+  background: #0b0b0b;
+  color: #fff;
   display: flex;
   flex-direction: column;
   height: 100vh;
-  overflow: hidden;
 }
 
 header {
+  padding: 15px;
   text-align: center;
-  padding: 14px;
-  font-size: 18px;
-  letter-spacing: 1px;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(6px);
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  background: #000;
+  font-size: 20px;
+  font-weight: bold;
+  border-bottom: 1px solid #222;
 }
 
-/* ===== ЧАТ ===== */
 #chat {
   flex: 1;
-  padding: 16px;
   overflow-y: auto;
+  padding: 15px;
 }
 
 .msg {
   max-width: 80%;
-  padding: 14px 18px;
   margin-bottom: 12px;
-  border-radius: 16px;
-  line-height: 1.5;
-  white-space: pre-wrap;
+  padding: 10px 14px;
+  border-radius: 12px;
+  line-height: 1.4;
 }
 
 .user {
-  background: #0f0f0f;
-  border: 1px solid rgba(255,255,255,0.1);
+  background: #1e1e1e;
+  align-self: flex-end;
   margin-left: auto;
 }
 
 .ai {
-  background: #050505;
-  border: 1px solid rgba(255,255,255,0.08);
+  background: #111;
+  border: 1px solid #222;
 }
 
-/* ===== КУРСОР ПЕЧАТИ ===== */
 .cursor {
   display: inline-block;
+  margin-left: 2px;
   animation: blink 1s infinite;
 }
+
 @keyframes blink {
-  0%,50%,100% { opacity: 1; }
-  25%,75% { opacity: 0; }
+  0%, 50%, 100% { opacity: 1; }
+  25%, 75% { opacity: 0; }
 }
 
-/* ===== КАРТИНКИ ===== */
-img.generated {
-  max-width: 100%;
-  border-radius: 14px;
-  margin-top: 10px;
-  border: 1px solid rgba(255,255,255,0.1);
-}
-
-/* ===== ВВОД ===== */
 footer {
   display: flex;
-  gap: 8px;
-  padding: 12px;
-  background: rgba(0,0,0,0.7);
-  border-top: 1px solid rgba(255,255,255,0.05);
+  padding: 10px;
+  background: #000;
+  border-top: 1px solid #222;
 }
 
 input {
   flex: 1;
-  padding: 14px;
-  border-radius: 25px;
-  border: none;
+  padding: 10px;
+  background: #111;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 8px;
   outline: none;
-  background: #050505;
-  color: #e5e7eb;
-  font-size: 16px;
 }
 
 button {
-  padding: 14px 18px;
-  border-radius: 25px;
-  border: none;
+  margin-left: 8px;
+  padding: 10px 15px;
+  background: #1a1a1a;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 8px;
   cursor: pointer;
-  background: #111;
-  color: #e5e7eb;
-  border: 1px solid rgba(255,255,255,0.15);
-  transition: background 0.2s;
 }
 
 button:hover {
-  background: #1a1a1a;
+  background: #222;
+}
+
+img.generated {
+  max-width: 100%;
+  border-radius: 12px;
+  margin-top: 10px;
 }
 </style>
 </head>
 
 <body>
 
-<header>salim I alkhas Ai</header>
+<header>alkhas I alkhas AI</header>
 
 <div id="chat"></div>
 
 <footer>
-  <input id="prompt" placeholder="Напиши запрос..." />
-  <button onclick="sendText()">Текст</button>
-  <button onclick="sendImage()">Картинка</button>
-</footer>
-
-<script>
-const chat = document.getElementById("chat");
-const input = document.getElementById("prompt");
-const HF_TOKEN = ""; // можно оставить пустым
-
-function addMessage(text, cls) {
-  const div = document.createElement("div");
-  div.className = "msg " + cls;
-  div.textContent = text;
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
-  return div;
-}
-
-/* ===== TYPING EFFECT ===== */
-function typeText(el, text, speed = 22) {
-  el.textContent = "";
-  let i = 0;
-  const cursor = document.createElement("span");
-  cursor.className = "cursor";
-  cursor.textContent = "▍";
-  el.appendChild(cursor);
-
-  const timer = setInterval(() => {
-    cursor.remove();
-    el.textContent += text[i];
-    el.appendChild(cursor);
-    i++;
-    chat.scrollTop = chat.scrollHeight;
-    if (i >= text.length) {
-      clearInterval(timer);
-      cursor.remove();
-    }
-  }, speed);
-}
-
-async function sendText() {
-  const text = input.value.trim();
-  if (!text) return;
-  input.value = "";
-
-  addMessage(text, "user");
-  const thinking = addMessage("Думаю…", "ai");
-
-  const res = await fetch(
-    "https://api-inference.huggingface.co/models/gpt2",
-    {
-      method: "POST",
-      headers: {
-        "Authorization": HF_TOKEN ? "Bearer " + HF_TOKEN : undefined,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ inputs: text })
-    }
-  );
-
-  const data = await res.json();
-  const answer = data[0]?.generated_text || "Ошибка генерации";
-  typeText(thinking, answer);
-}
-
-async function sendImage() {
-  const text = input.value.trim();
-  if (!text) return;
-  input.value = "";
-
-  addMessage(text, "user");
-  addMessage("Генерирую изображение…", "ai");
-
-  const res = await fetch(
-    "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2",
-    {
-      method: "POST",
-      headers: {
-        "Authorization": HF_TOKEN ? "Bearer " + HF_TOKEN : undefined,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ inputs: text })
-    }
-  );
-
-  const blob = await res.blob();
-  chat.lastChild.remove();
-
-  const img = document.createElement("img");
-  img.src = URL.createObjectURL(blob);
-  img.className = "generated";
-  chat.appendChild(img);
-  chat.scrollTop = chat.scrollHeight;
-}
-</script>
-
-</body>
-</html>
+  <input id="input" placeholder="Напиши вопрос..." />
+  <button
