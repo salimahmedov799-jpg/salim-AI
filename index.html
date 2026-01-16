@@ -7,35 +7,46 @@
 
 <style>
 *{box-sizing:border-box}
+
 body{
   margin:0;
   background:#0f0f0f;
   color:#e5e7eb;
   font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+  height:100dvh;
+  display:flex;
+  justify-content:center;
 }
 
-/* APP */
-.app{
+/* CHAT CONTAINER */
+.chat{
+  width:100%;
   max-width:900px;
-  margin:auto;
   height:100dvh;
   display:flex;
   flex-direction:column;
+  background:#0f0f0f;
 }
 
 /* HEADER */
 .header{
   padding:14px 16px;
   border-bottom:1px solid #1f1f1f;
-  background:#0f0f0f;
+}
+.header-title{
   font-weight:600;
+  font-size:14px;
+}
+.status{
+  font-size:11px;
+  opacity:.6;
 }
 
-/* CHAT */
-.chat{
+/* MESSAGES */
+.messages{
   flex:1;
-  overflow-y:auto;
   padding:20px;
+  overflow-y:auto;
 }
 
 .msg{
@@ -43,14 +54,9 @@ body{
   padding:12px 14px;
   margin-bottom:14px;
   border-radius:14px;
-  font-size:15px;
   line-height:1.5;
+  font-size:15px;
   word-wrap:break-word;
-}
-
-.ai{
-  background:#171717;
-  border:1px solid #222;
 }
 
 .user{
@@ -59,16 +65,25 @@ body{
   margin-left:auto;
 }
 
+.bot{
+  background:#171717;
+  border:1px solid #222;
+  color:#e5e7eb;
+}
+
 /* INPUT */
 .input{
-  display:flex;
-  gap:10px;
-  padding:14px;
   border-top:1px solid #1f1f1f;
+  padding:14px;
   background:#0f0f0f;
 }
 
-textarea{
+.input-box{
+  display:flex;
+  gap:10px;
+}
+
+#text{
   flex:1;
   resize:none;
   background:#171717;
@@ -84,55 +99,63 @@ button{
   background:#2563eb;
   border:none;
   border-radius:12px;
-  padding:0 18px;
+  padding:0 16px;
   font-size:16px;
   color:#fff;
   cursor:pointer;
 }
+
+#voiceBtn{
+  background:#171717;
+  border:1px solid #262626;
+}
+
 button:hover{opacity:.9}
 </style>
 </head>
 
 <body>
 
-<div class="app">
+<div class="chat">
 
-  <div class="header">Salim AI</div>
+  <div class="header">
+    <div class="header-title">Salim AI</div>
+    <div class="status">online</div>
+  </div>
 
-  <div class="chat" id="chat">
-    <div class="msg ai">Привет! Я Salim AI. Чем могу помочь?</div>
+  <div class="messages" id="messages">
+    <div class="msg bot">Привет! Я Salim AI. Чем могу помочь?</div>
   </div>
 
   <div class="input">
-    <textarea id="text" rows="1" placeholder="Написать сообщение..."></textarea>
-    <button onclick="send()">➤</button>
+    <div class="input-box">
+      <button id="voiceBtn">🎤</button>
+      <input id="text" placeholder="Написать сообщение..." />
+      <button id="sendBtn">➤</button>
+    </div>
   </div>
 
 </div>
 
 <script>
-const chat=document.getElementById("chat");
-const input=document.getElementById("text");
+/* JS ОСТАВЛЕН ПРОСТЫМ — сервер можешь подключать как был */
+const messages = document.getElementById("messages");
+const input = document.getElementById("text");
+const sendBtn = document.getElementById("sendBtn");
+
+sendBtn.onclick = send;
 
 function send(){
-  const text=input.value.trim();
+  const text = input.value.trim();
   if(!text) return;
 
-  chat.innerHTML+=`<div class="msg user">${text}</div>`;
-  input.value="";
-  chat.scrollTop=chat.scrollHeight;
+  messages.innerHTML += `<div class="msg user">${text}</div>`;
+  input.value = "";
+  messages.scrollTop = messages.scrollHeight;
 
-  const ai=document.createElement("div");
-  ai.className="msg ai";
-  ai.textContent="Salim AI думает...";
-  chat.appendChild(ai);
-  chat.scrollTop=chat.scrollHeight;
-
-  /* 👉 Здесь потом подключим GPT API */
-  setTimeout(()=>{
-    ai.textContent="Это ответ Salim AI 🤖";
-    chat.scrollTop=chat.scrollHeight;
-  },800);
+  // сюда у тебя уже был/будет ответ сервера
+  messages.innerHTML += `<div class="msg bot">Salim AI отвечает...</div>`;
+  messages.scrollTop = messages.scrollHeight;
 }
 </script>
 
