@@ -1,225 +1,247 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Salim AI</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salim AI :: CORE</title>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
 *{box-sizing:border-box}
+
+:root{
+  --neon:#22d3ee;
+  --pink:#ec4899;
+  --green:#22c55e;
+  --bg:#020617;
+}
 
 body{
   margin:0;
-  font-family:'Inter',sans-serif;
+  font-family:'JetBrains Mono',monospace;
   background:
-    radial-gradient(circle at top, #0f172a, #000 60%),
-    linear-gradient(180deg,#000,#020617);
-  color:#fff;
+    radial-gradient(circle at top,#020617,#000 60%),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,.03) 0,
+      rgba(255,255,255,.03) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  color:#e5e7eb;
   display:flex;
   justify-content:center;
   align-items:center;
   height:100vh;
+  overflow:hidden;
 }
 
+/* ===== CORE ===== */
+.core{
+  position:fixed;
+  top:50%;
+  left:50%;
+  width:180px;
+  height:180px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:
+    radial-gradient(circle,var(--neon),transparent 60%);
+  filter:blur(2px);
+  animation:pulse 3s infinite;
+  opacity:.45;
+  z-index:0;
+}
+
+.core::before,
+.core::after{
+  content:"";
+  position:absolute;
+  inset:-25px;
+  border-radius:50%;
+  border:1px solid rgba(34,211,238,.25);
+  animation:spin 10s linear infinite;
+}
+
+.core::after{
+  inset:-45px;
+  animation-duration:18s;
+}
+
+@keyframes pulse{
+  0%,100%{transform:translate(-50%,-50%) scale(1)}
+  50%{transform:translate(-50%,-50%) scale(1.15)}
+}
+
+@keyframes spin{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+
+/* ===== CHAT ===== */
 .chat{
+  position:relative;
+  z-index:2;
   width:100%;
-  max-width:420px;
-  height:92vh;
-  background:rgba(0,0,0,.6);
-  backdrop-filter:blur(18px);
+  max-width:440px;
+  height:94vh;
+  background:rgba(2,6,23,.9);
+  border-radius:20px;
   display:flex;
   flex-direction:column;
-  border-radius:22px;
   overflow:hidden;
-  border:1px solid rgba(255,255,255,.08);
+  border:1px solid rgba(34,211,238,.3);
+  box-shadow:0 0 40px rgba(34,211,238,.25);
 }
 
+/* HEADER */
 .header{
-  padding:14px 16px;
+  padding:14px;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  border-bottom:1px solid rgba(255,255,255,.06);
+  border-bottom:1px solid rgba(34,211,238,.25);
 }
 
-.header-title{font-weight:700;font-size:16px}
-
-.clear-btn{
-  background:none;border:none;color:#f87171;
-  font-size:18px;cursor:pointer
+.header-title{
+  color:var(--neon);
+  font-weight:700;
+  letter-spacing:1px;
+  text-shadow:0 0 12px rgba(34,211,238,.8);
 }
 
+/* MESSAGES */
 .messages{
-  flex:1;padding:16px;overflow-y:auto;
-  scrollbar-width:none
+  flex:1;
+  padding:16px;
+  overflow-y:auto;
 }
 .messages::-webkit-scrollbar{display:none}
 
 .msg{
   margin-bottom:14px;
-  padding:12px 15px;
-  border-radius:16px;
-  max-width:80%;
-  font-size:14.5px;
-  line-height:1.45;
+  padding:12px 14px;
+  border-radius:14px;
+  max-width:82%;
+  font-size:14px;
+  animation:fade .25s ease;
+}
+
+@keyframes fade{
+  from{opacity:0;transform:translateY(6px)}
+  to{opacity:1}
 }
 
 .user{
   margin-left:auto;
-  background:linear-gradient(135deg,#2563eb,#3b82f6);
+  background:linear-gradient(135deg,var(--pink),#9333ea);
+  box-shadow:0 0 18px rgba(236,72,153,.5);
 }
 
 .bot{
-  background:rgba(15,23,42,.9);
-  border:1px solid rgba(255,255,255,.08);
+  background:rgba(2,6,23,.95);
+  border:1px solid rgba(34,211,238,.4);
+  box-shadow:0 0 18px rgba(34,211,238,.35);
 }
 
-.msg img{
-  max-width:100%;
-  border-radius:12px;
-  margin-top:6px;
-}
-
+/* INPUT */
 .input{
   display:flex;
-  padding:12px;
   gap:8px;
-  border-top:1px solid rgba(255,255,255,.06);
+  padding:12px;
+  border-top:1px solid rgba(34,211,238,.25);
 }
 
-input[type="text"]{
+input{
   flex:1;
   padding:14px;
-  border-radius:16px;
-  border:none;
-  background:rgba(255,255,255,.08);
-  color:#fff;
+  border-radius:14px;
+  border:1px solid rgba(34,211,238,.35);
+  background:rgba(2,6,23,.9);
+  color:#e5e7eb;
   outline:none;
 }
 
 button{
-  padding:0 14px;
-  border-radius:16px;
   border:none;
-  cursor:pointer;
+  border-radius:14px;
+  padding:0 14px;
   font-size:18px;
+  cursor:pointer;
+  background:rgba(34,211,238,.15);
+  color:var(--neon);
+  box-shadow:0 0 12px rgba(34,211,238,.4);
 }
 
 #sendBtn{
-  background:linear-gradient(135deg,#22c55e,#16a34a);
-}
-#voiceBtn,#imageBtn{
-  background:rgba(255,255,255,.08);
-  color:#fff;
+  background:linear-gradient(135deg,var(--green),#16a34a);
+  color:#020617;
+  box-shadow:0 0 18px rgba(34,197,94,.6);
 }
 </style>
 </head>
 
 <body>
 
+<div class="core"></div>
+
 <div class="chat">
   <div class="header">
-    <div class="header-title">🚀 Salim AI</div>
-    <button class="clear-btn" onclick="clearAll()">🧹</button>
+    <div class="header-title">SALIM AI ▌CORE ACTIVE</div>
   </div>
 
   <div class="messages" id="messages"></div>
 
   <div class="input">
-    <button id="imageBtn">📷</button>
-    <input type="file" id="imageInput" accept="image/*" hidden>
-    <input type="text" id="text" placeholder="Напиши сообщение..." />
-    <button id="voiceBtn">🎤</button>
-    <button id="sendBtn">➤</button>
+    <input id="text" placeholder="> Введи команду..." />
+    <button id="voiceBtn">🎙</button>
+    <button id="sendBtn">⮞</button>
   </div>
 </div>
 
 <script>
 const messages=document.getElementById("messages");
 const input=document.getElementById("text");
-const imageInput=document.getElementById("imageInput");
 
-let imageBase64=null;
-
-function add(content,role){
+function add(text,role){
   const d=document.createElement("div");
   d.className="msg "+role;
-  if(typeof content==="string") d.textContent=content;
-  else d.appendChild(content);
+  d.textContent=text;
   messages.appendChild(d);
   messages.scrollTop=messages.scrollHeight;
 }
 
-document.getElementById("imageBtn").onclick=()=>imageInput.click();
-
-imageInput.onchange=()=>{
-  const file=imageInput.files[0];
-  if(!file)return;
-
-  const reader=new FileReader();
-  reader.onload=()=>{
-    imageBase64=reader.result;
-    const img=document.createElement("img");
-    img.src=imageBase64;
-    add(img,"user");
-  };
-  reader.readAsDataURL(file);
-};
-
 async function send(){
   const text=input.value.trim();
-  if(!text && !imageBase64)return;
+  if(!text)return;
 
-  if(text) add(text,"user");
+  add(text,"user");
   input.value="";
-
-  add("Salim AI думает...","bot");
+  add("⏳ Обработка нейросигналов...","bot");
 
   try{
-    let res,data;
-
-    if(imageBase64){
-      res=await fetch("https://salim-ai.onrender.com/api/vision",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({
-          image:imageBase64,
-          prompt:text||"Что на изображении?"
-        })
-      });
-    }else{
-      res=await fetch("https://salim-ai.onrender.com/api/chat",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({message:text})
-      });
-    }
-
-    data=await res.json();
+    const res=await fetch("https://salim-ai.onrender.com/api/chat",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({message:text})
+    });
+    const data=await res.json();
     messages.lastChild.textContent=data.reply||"Нет ответа";
-
   }catch{
-    messages.lastChild.textContent="Ошибка соединения";
+    messages.lastChild.textContent="⚠ Потеря соединения";
   }
-
-  imageBase64=null;
 }
 
 document.getElementById("sendBtn").onclick=send;
+input.addEventListener("keydown",e=>{if(e.key==="Enter")send()});
 
-/* 🎤 голос */
+/* 🎤 */
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 if(SR){
   const r=new SR();
   r.lang="ru-RU";
   document.getElementById("voiceBtn").onclick=()=>r.start();
   r.onresult=e=>input.value=e.results[0][0].transcript;
-}
-
-function clearAll(){
-  if(!confirm("Очистить чат?"))return;
-  messages.innerHTML="";
 }
 </script>
 
